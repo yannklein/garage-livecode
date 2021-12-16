@@ -3020,6 +3020,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var stimulus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! stimulus */ "./node_modules/stimulus/index.js");
 /* harmony import */ var stimulus_webpack_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! stimulus/webpack-helpers */ "./node_modules/stimulus/webpack-helpers.js");
+// Tips: use 'sjw' shortcut to build the stimulus setup
 
  // initialize StimulusJS
 
@@ -3075,15 +3076,15 @@ webpackContext.id = "./src/controllers sync recursive \\.js$";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _default; });
 /* harmony import */ var stimulus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! stimulus */ "./node_modules/stimulus/index.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } Object.defineProperty(subClass, "prototype", { value: Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }), writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
@@ -3100,8 +3101,26 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 // DON'T CHANGE THIS LINE
-var myBadAssGarage = "galyms-ultra-famous-garage";
+var myBadAssGarage = "vindiesel-mod-shop";
 if (myBadAssGarage) document.querySelector("#garage-name").innerText = myBadAssGarage.replace(/-/g, " "); // //////////////////////
+// //////////////////////
+// Pseudo-code
+// //////////////////////
+// ✅ Initiatize a Stimulus controller
+// ✅ Initialize a data-controller in HTML
+// SHOW CARS
+// ✅ 1. Target some elements (cars-list)
+// ✅ 2. We don't listen to any event! load the cars at refresh
+// ✅ 2.5 Fetch the cars from our garage API
+// ✅ 3. Insert the cars inside our cars-list
+// ADD NEW CAR
+// ✅ 1. Target some elements (4 inputs, 1 button)
+// ✅ 2. Listen to a click on the button
+// ✅ 2.5 POST a new car to the garage API
+// ✅ 3. SHOW CARS
+// //////////////////////
+// Code
+// //////////////////////
 // Tips: use 'sjc' shortcut to build the controller
 
 
@@ -3121,8 +3140,7 @@ var _default = /*#__PURE__*/function (_Controller) {
     key: "connect",
     value: function connect() {
       console.log('Hello from garage_controller.js');
-      console.log(this.listTarget);
-      this.url = "https://wagon-garage-api.herokuapp.com/".concat(myBadAssGarage, "/cars");
+      console.log(this.carsListTarget);
       this.getCars();
     }
   }, {
@@ -3130,31 +3148,34 @@ var _default = /*#__PURE__*/function (_Controller) {
     value: function getCars() {
       var _this = this;
 
-      fetch(this.url).then(function (response) {
+      var url = "https://wagon-garage-api.herokuapp.com/".concat(myBadAssGarage, "/cars");
+      fetch(url).then(function (response) {
         return response.json();
       }).then(function (data) {
         console.log(data);
 
-        _this.showCars(data);
+        _this.displayCars(data);
       });
     }
   }, {
-    key: "showCars",
-    value: function showCars(cars) {
+    key: "displayCars",
+    value: function displayCars(cars) {
       var _this2 = this;
 
-      this.listTarget.innerHTML = "";
+      this.carsListTarget.innerHTML = '';
       cars.forEach(function (car) {
-        _this2.listTarget.insertAdjacentHTML("afterbegin", " <div class=\"car\">\n            <div class=\"car-image\">\n              <img src=\"http://loremflickr.com/280/280/".concat(car.brand, " ").concat(car.model, "\" />\n            </div>\n            <div class=\"car-info\">\n              <h4>").concat(car.brand, " ").concat(car.model, "</h4>\n              <p><strong>Owner:</strong>").concat(car.owner, "</p>\n              <p><strong>Plate:</strong>").concat(car.plate, "</p>\n            </div>\n          </div>"));
+        _this2.carsListTarget.insertAdjacentHTML("beforeend", "<div class=\"car\">\n          <div class=\"car-image\">\n            <img src=\"http://loremflickr.com/280/280/".concat(car.brand, " ").concat(car.model, "\" />\n          </div>\n          <div class=\"car-info\">\n            <h4>").concat(car.brand, " ").concat(car.model, "</h4>\n            <p><strong>Owner:</strong>").concat(car.owner, "</p>\n            <p><strong>Plate:</strong>").concat(car.plate, "</p>\n          </div>\n        </div>"));
       });
     }
   }, {
-    key: "createCar",
-    value: function createCar(event) {
+    key: "addCar",
+    value: function addCar(event) {
       var _this3 = this;
 
       event.preventDefault();
-      fetch(this.url, {
+      console.log(event);
+      var url = "https://wagon-garage-api.herokuapp.com/".concat(myBadAssGarage, "/cars");
+      fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -3169,24 +3190,16 @@ var _default = /*#__PURE__*/function (_Controller) {
         return response.json();
       }).then(function (data) {
         console.log(data);
-        _this3.getCars;
+
+        _this3.getCars();
       });
     }
   }]);
 
   return _default;
-}(stimulus__WEBPACK_IMPORTED_MODULE_0__["Controller"]); // Show all the cars
-// 1. Select cars-list DONE
-// 2. fetch API (GET), get all the cars data DONE
-// 3. populate the cars-list with cars cards
-// Add a new car
-// 1. Select button, the 4 inputs
-// 2. listen to a click on button
-// 3. POST request to the API with car data
-// 4. reload the cars-list
+}(stimulus__WEBPACK_IMPORTED_MODULE_0__["Controller"]);
 
-
-_defineProperty(_default, "targets", ['list', 'brand', 'model', 'owner', 'plate']);
+_defineProperty(_default, "targets", ['carsList', 'brand', 'owner', 'plate', 'model', 'submit']);
 
 
 
