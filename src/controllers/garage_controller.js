@@ -1,83 +1,93 @@
 // DON'T CHANGE THIS LINE
-const myBadAssGarage = "galyms-ultra-famous-garage";
+const myBadAssGarage = "vindiesel-mod-shop";
 if (myBadAssGarage) document.querySelector("#garage-name").innerText = myBadAssGarage.replace(/-/g, " ");
 // //////////////////////
 
+// //////////////////////
+// Pseudo-code
+// //////////////////////
+
+// ✅ Initiatize a Stimulus controller
+// ✅ Initialize a data-controller in HTML
+
+// SHOW CARS
+
+// ✅ 1. Target some elements (cars-list)
+// ✅ 2. We don't listen to any event! load the cars at refresh
+// ✅ 2.5 Fetch the cars from our garage API
+// ✅ 3. Insert the cars inside our cars-list
+
+// ADD NEW CAR
+
+// ✅ 1. Target some elements (4 inputs, 1 button)
+// ✅ 2. Listen to a click on the button
+// ✅ 2.5 POST a new car to the garage API
+// ✅ 3. SHOW CARS
+
+// //////////////////////
+// Code
+// //////////////////////
 // Tips: use 'sjc' shortcut to build the controller
 import { Controller } from 'stimulus'
 
 export default class extends Controller {
-  static targets = [ 'list', 'brand', 'model', 'owner', 'plate' ]
+  static targets = [ 'carsList', 'brand', 'owner', 'plate','model', 'submit' ]
 
   connect() {
     console.log('Hello from garage_controller.js')
-    console.log(this.listTarget)
-    this.url = `https://wagon-garage-api.herokuapp.com/${myBadAssGarage}/cars`
+    console.log(this.carsListTarget)
     this.getCars();
   }
 
   getCars() {
-    fetch(this.url)
+    const url = `https://wagon-garage-api.herokuapp.com/${myBadAssGarage}/cars`
+    fetch(url)
       .then(response => response.json())
-      .then((data) => {
+      .then((data => {
         console.log(data)
-        this.showCars(data)
-      })
+        this.displayCars(data);
+      }))
   }
 
-  showCars(cars) {
-    this.listTarget.innerHTML = ""
+  displayCars(cars) {
+    this.carsListTarget.innerHTML = ''
     cars.forEach((car) => {
-      this.listTarget.insertAdjacentHTML(
-        "afterbegin",
-        ` <div class="car">
-            <div class="car-image">
-              <img src="http://loremflickr.com/280/280/${car.brand} ${car.model}" />
-            </div>
-            <div class="car-info">
-              <h4>${car.brand} ${car.model}</h4>
-              <p><strong>Owner:</strong>${car.owner}</p>
-              <p><strong>Plate:</strong>${car.plate}</p>
-            </div>
-          </div>`
+      this.carsListTarget.insertAdjacentHTML(
+        "beforeend",
+        `<div class="car">
+          <div class="car-image">
+            <img src="http://loremflickr.com/280/280/${car.brand} ${car.model}" />
+          </div>
+          <div class="car-info">
+            <h4>${car.brand} ${car.model}</h4>
+            <p><strong>Owner:</strong>${car.owner}</p>
+            <p><strong>Plate:</strong>${car.plate}</p>
+          </div>
+        </div>`
       );
-    });
-  }
-  createCar(event) {
-    event.preventDefault();
-
-    fetch(this.url, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body:JSON.stringify({
-          "brand": this.brandTarget.value,
-          "model": this.modelTarget.value,
-          "owner": this.ownerTarget.value,
-          "plate": this.plateTarget.value
-      })
-      
-    }).then(response => response.json())
-    .then((data) => {
-      console.log(data)
-      this.getCars
     })
-  };
+  }
+
+  addCar(event) {
+    event.preventDefault()
+    console.log(event)
+    const url = `https://wagon-garage-api.herokuapp.com/${myBadAssGarage}/cars`
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "brand": this.brandTarget.value,
+        "model": this.modelTarget.value,
+        "owner": this.ownerTarget.value,
+        "plate": this.plateTarget.value
+      })
+    })
+      .then(response => response.json())
+      .then((data => {
+        console.log(data)
+        this.getCars();
+      }))
+  }
 }
-
-
-
-// Show all the cars
-// 1. Select cars-list DONE
-
-// 2. fetch API (GET), get all the cars data DONE
-
-// 3. populate the cars-list with cars cards
-
-// Add a new car
-// 1. Select button, the 4 inputs
-
-// 2. listen to a click on button
-
-// 3. POST request to the API with car data
-
-// 4. reload the cars-list
